@@ -1,5 +1,10 @@
 # SLM Fine-tuning for Text Classification
 
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green)
+![Status](https://img.shields.io/badge/Status-Active-brightgreen)
+![Stack](https://img.shields.io/badge/Stack-PyTorch%20%7C%20HuggingFace%20%7C%20LoRA%2FPEFT-orange)
+
 Fine-tuning a small language model (Qwen / DistilBERT-family) on domain-specific text
 classification tasks using LoRA (PEFT) for parameter-efficient training.
 
