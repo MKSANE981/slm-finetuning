@@ -15,6 +15,9 @@ Results on ENSAI internship dataset: 86.4% weighted F1 after 5 epochs.
 """
 
 import argparse
+import sys
+import os
+sys.path.insert(0, os.path.dirname(__file__))
 from dataset import load_from_csv, tokenize_dataset, get_label_map
 from transformers import (
     AutoModelForSequenceClassification,
@@ -23,6 +26,7 @@ from transformers import (
     DataCollatorWithPadding,
 )
 from peft import LoraConfig, get_peft_model, TaskType
+import torch
 import numpy as np
 from sklearn.metrics import accuracy_score, f1_score
 
@@ -83,7 +87,7 @@ def train(
     label_map = get_label_map(dataset)
     n_labels = len(label_map)
 
-    tokenized, tokenizer = tokenize_dataset(dataset, model_name)
+    tokenized, tokenizer = tokenize_dataset(dataset, model_name, label_map=label_map)
 
     base_model = AutoModelForSequenceClassification.from_pretrained(
         model_name,
@@ -111,12 +115,12 @@ def train(
         per_device_eval_batch_size=batch_size,
         learning_rate=lr,
         weight_decay=0.01,
-        evaluation_strategy="epoch",
+        eval_strategy="epoch",
         save_strategy="epoch",
         load_best_model_at_end=True,
         metric_for_best_model="f1",
         logging_steps=50,
-        fp16=True,  # remove if running on CPU or MPS
+        fp16=torch.cuda.is_available(),
     )
 
     trainer = Trainer(
@@ -124,7 +128,7 @@ def train(
         args=args,
         train_dataset=tokenized["train"],
         eval_dataset=tokenized.get("test"),
-        tokenizer=tokenizer,
+        processing_class=tokenizer,
         data_collator=DataCollatorWithPadding(tokenizer),
         compute_metrics=compute_metrics,
     )

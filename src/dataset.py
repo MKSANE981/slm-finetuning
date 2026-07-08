@@ -43,6 +43,7 @@ def tokenize_dataset(
     text_col: str = "text",
     label_col: str = "label",
     max_length: int = 256,
+    label_map: dict = None,
 ) -> tuple:
     """
     Tokenize all splits in the dataset using the model's own tokenizer.
@@ -75,10 +76,13 @@ def tokenize_dataset(
             truncation=True,
             max_length=max_length,
         )
-        enc["labels"] = batch[label_col]
+        if label_map is not None:
+            enc["labels"] = [label_map[l] for l in batch[label_col]]
+        else:
+            enc["labels"] = batch[label_col]
         return enc
 
-    tokenized = dataset.map(tokenize, batched=True, remove_columns=[text_col])
+    tokenized = dataset.map(tokenize, batched=True, remove_columns=[text_col, label_col])
     return tokenized, tokenizer
 
 
