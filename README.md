@@ -5,20 +5,19 @@
 ![Status](https://img.shields.io/badge/Status-Active-brightgreen)
 ![Stack](https://img.shields.io/badge/Stack-PyTorch%20%7C%20HuggingFace%20%7C%20LoRA%2FPEFT-orange)
 
-Fine-tuning a small language model (Qwen / DistilBERT-family) on domain-specific text
-classification tasks using LoRA (PEFT) for parameter-efficient training.
+Fine-tuning a small language model on a domain-specific text classification task
+using LoRA (PEFT) for parameter-efficient training.
 
-Originally developed for insurance document classification. Adapted here for public
-demonstration using the AG News dataset.
+The method was first applied to insurance document classification in a professional
+setting (proprietary data and model, not published here). This repository is a public
+demonstration of the same approach using DistilBERT and the AG News dataset.
 
-## Key Results (insurance domain — proprietary data)
+## Results
 
-| Metric | Value |
+| Setting | Result |
 |---|---|
-| Accuracy | **86.4%** |
-| Inference speed | **2.1× faster** than GPT-4o-mini |
-| Model size | 0.6B parameters |
-| Deployment | Local / sovereign (no external API) |
+| Insurance documents (proprietary, not reproducible here) | **86.4% accuracy** on a dedicated test set of 81 documents, against 74.1% for o4-mini on the same set |
+| This public demo (AG News subset) | run `src/evaluate.py` to obtain your own figures |
 
 ## Approach
 
@@ -75,7 +74,7 @@ src/evaluate.py  →  accuracy, F1, confusion matrix
 |------|--------|
 | **CPU-only training** | `fp16=False` on CPU — mixed precision requires CUDA. Expect ~15 min/epoch on CPU for 8 000 examples with DistilBERT. Use a GPU or reduce `num_train_epochs`. |
 | **Model download** | First run downloads DistilBERT (~250 MB) and AG News (~30 MB) from HuggingFace Hub. Subsequent runs use the local cache. |
-| **Proprietary results** | The 86.4% accuracy figure is from the insurance document classification task on proprietary data. AG News results will differ (typically 93–95% with DistilBERT on full dataset). |
+| **Proprietary results** | The 86.4% accuracy figure is from the insurance document classification task on proprietary data. AG News results will differ and are not comparable. |
 
 ## Project Structure
 
